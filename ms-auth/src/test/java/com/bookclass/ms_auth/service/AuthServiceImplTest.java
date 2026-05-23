@@ -22,7 +22,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@SuppressWarnings({"null", "unchecked"})
+@SuppressWarnings({"null"})
 @ExtendWith(MockitoExtension.class)
 class AuthServiceImplTest {
 
@@ -69,6 +68,7 @@ class AuthServiceImplTest {
                 .password("encodedPassword")
                 .email("test@test.com")
                 .roles(Set.of(testRole))
+                .active(true) // FIX: valor explícito para evitar false-positive en deactivateUser
                 .build();
     }
 
@@ -80,7 +80,7 @@ class AuthServiceImplTest {
                 .thenReturn(null);
         when(userRepository.findByUsername("testuser"))
                 .thenReturn(Optional.of(testUser));
-        when(jwtService.generateToken(anyString(), any(Map.class)))
+        when(jwtService.generateToken(anyString(), anyMap())) // FIX: anyMap() es más robusto con generics
                 .thenReturn("mocked.jwt.token");
 
         AuthResponse response = authService.login(request);
@@ -144,12 +144,13 @@ class AuthServiceImplTest {
 
     @Test
     void deactivateUser_shouldSetActiveToFalse() {
+        // testUser.isActive() == true gracias al setUp explícito
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         authService.deactivateUser(1L);
 
-        assertFalse(testUser.isActive());
+        assertFalse(testUser.isActive()); // ahora sí verifica un cambio real de estado
         verify(userRepository, times(1)).save(testUser);
     }
 }

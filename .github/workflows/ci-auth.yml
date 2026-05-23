@@ -1,0 +1,44 @@
+name: CI - ms-auth
+
+on:
+  push:
+    branches: [develop, main, feature/ms-auth-base]
+    paths:
+      - 'ms-auth/**'
+      - '.github/workflows/ms-auth-ci.yml'
+
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - 'ms-auth/**'
+      - '.github/workflows/ms-auth-ci.yml'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Grant execute permission to mvnw
+        working-directory: ms-auth
+        run: chmod +x mvnw
+
+      - name: Build and test
+        working-directory: ms-auth
+        run: ./mvnw clean package
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ms-auth-test-results
+          path: ms-auth/target/surefire-reports/

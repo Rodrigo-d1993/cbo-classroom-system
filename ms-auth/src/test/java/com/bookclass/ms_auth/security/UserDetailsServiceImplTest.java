@@ -43,6 +43,7 @@ class UserDetailsServiceImplTest {
                 .password("encodedPassword")
                 .email("test@test.com")
                 .roles(Set.of(testRole))
+                .active(true) // FIX: valor explícito para que shouldBeActiveWhenUserIsActive sea confiable
                 .build();
     }
 
@@ -76,10 +77,30 @@ class UserDetailsServiceImplTest {
 
     @Test
     void shouldBeActiveWhenUserIsActive() {
+        // testUser.active == true gracias al setUp explícito
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
 
         assertTrue(userDetails.isEnabled());
+    }
+
+    @Test
+    void shouldBeDisabledWhenUserIsInactive() {
+        // FIX: caso faltante — usuario desactivado no debe poder autenticarse
+        User inactiveUser = User.builder()
+                .id(2L)
+                .username("inactiveuser")
+                .password("encodedPassword")
+                .email("inactive@test.com")
+                .roles(Set.of())
+                .active(false)
+                .build();
+
+        when(userRepository.findByUsername("inactiveuser")).thenReturn(Optional.of(inactiveUser));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername("inactiveuser");
+
+        assertFalse(userDetails.isEnabled());
     }
 }

@@ -43,10 +43,12 @@ class AuthControllerTest {
                 .role("DOCENTE")
                 .build();
 
+        // FIX: username alineado con el que retorna el mock en register_shouldReturn201
+        // El mock retorna este objeto, así que los datos deben ser coherentes internamente.
         userResponse = UserResponse.builder()
                 .id(1L)
-                .username("testuser")
-                .email("test@test.com")
+                .username("newuser") // FIX: era "testuser", pero el request de register usa "newuser"
+                .email("new@test.com")
                 .active(true)
                 .roles(Set.of("DOCENTE"))
                 .build();
@@ -71,7 +73,7 @@ class AuthControllerTest {
                 new RegisterRequest("newuser", "password", "new@test.com", RoleName.DOCENTE));
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("testuser", response.getBody().getUsername());
+        assertEquals("newuser", response.getBody().getUsername()); // FIX: ahora coincide con el request
     }
 
     @Test
@@ -86,7 +88,17 @@ class AuthControllerTest {
 
     @Test
     void getUserById_shouldReturn200() {
-        when(authService.getUserById(1L)).thenReturn(userResponse);
+        // Reutilizamos authResponse que sí tiene "testuser", o buscamos por id el user correcto.
+        // Creamos un userResponse específico para este test para mayor claridad.
+        UserResponse existingUser = UserResponse.builder()
+                .id(1L)
+                .username("testuser")
+                .email("test@test.com")
+                .active(true)
+                .roles(Set.of("DOCENTE"))
+                .build();
+
+        when(authService.getUserById(1L)).thenReturn(existingUser);
 
         ResponseEntity<UserResponse> response = authController.getUserById(1L);
 
