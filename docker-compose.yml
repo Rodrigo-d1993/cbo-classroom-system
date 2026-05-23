@@ -1,0 +1,41 @@
+services:
+
+  db-auth:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${AUTH_DB_NAME}
+      MYSQL_USER: ${AUTH_DB_USER}
+      MYSQL_PASSWORD: ${AUTH_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_auth_data:/var/lib/mysql
+      - ./ms-auth/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+    networks:
+      - backend
+
+  ms-auth:
+    build: ./ms-auth
+    ports:
+      - "${AUTH_PORT}:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-auth:3306/${AUTH_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${AUTH_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${AUTH_DB_PASS}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+    depends_on:
+      db-auth:
+        condition: service_healthy
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  db_auth_data:

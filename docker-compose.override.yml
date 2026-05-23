@@ -1,0 +1,7 @@
+services:
+  ms-auth:
+    volumes:
+      - ./ms-auth/src:/app/src
+    environment:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
