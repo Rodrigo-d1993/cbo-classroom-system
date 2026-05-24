@@ -65,6 +65,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public String extractUsernameFromToken(String token) {
+        return jwtService.extractUsername(token);
+    }
+
+    @Override
     public AuthResponse refresh(String token) {
         if (!jwtService.isTokenValid(token)) {
             throw new IllegalArgumentException("Invalid token");

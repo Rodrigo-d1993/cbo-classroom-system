@@ -17,4 +17,6 @@ public interface AuthService {
     List<UserResponse> getAllUsers();
     UserResponse updateUserRole(Long id, String roleName);
     void deactivateUser(Long id);
+    // utility to extract username from token
+    String extractUsernameFromToken(String token);
 }
