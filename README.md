@@ -1,10 +1,10 @@
 # CBO Classroom System
 
-Sistema de gestión escolar basado en microservicios, diseñado específicamente para establecimientos educacionales chilenos. Implementa funcionalidades críticas como autenticación, gestión de estudiantes, control de asistencia, calificaciones y anotaciones disciplinarias.
+Sistema de gestión escolar basado en microservicios para establecimientos educacionales chilenos.
 
-## Descripción del Proyecto
+## Descripción
 
-CBO Classroom System es una plataforma completa para la administración de instituciones educativas que cumple con los estándares y requisitos del sistema escolar chileno:
+Plataforma para la administración escolar que implementa:
 
 - Sistema de calificaciones con escala 1.0 a 7.0
 - Control de asistencia con mínimo 85% requerido
@@ -15,14 +15,7 @@ CBO Classroom System es una plataforma completa para la administración de insti
 
 ## Arquitectura
 
-El sistema está construido siguiendo una arquitectura de microservicios con las siguientes características:
-
-- **Patrón**: Microservices Architecture
-- **Comunicación**: API REST
-- **Autenticación**: JWT (JSON Web Tokens)
-- **Base de datos**: Database-per-Service (MySQL 8.0)
-- **Contenedores**: Docker + Docker Compose
-- **Documentación**: OpenAPI 3.0 / Swagger UI
+Microservicios con comunicación REST, autenticación JWT y base de datos MySQL independiente por servicio.
 
 ### Microservicios Implementados
 
@@ -32,126 +25,57 @@ El sistema está construido siguiendo una arquitectura de microservicios con las
 | ms-students | 8082 | Gestión de estudiantes y apoderados |
 | ms-grades | 8083 | Sistema de calificaciones (1.0-7.0) |
 | ms-attendance | 8084 | Control de asistencia escolar |
-| ms-annotations | 8085 | Anotaciones disciplinarias (en desarrollo) |
+| ms-annotations | 8085 | Anotaciones disciplinarias |
 
-## Tecnologías Utilizadas
+## Stack Tecnológico
 
-### Backend
-- **Framework**: Spring Boot 3.5.14
-- **Lenguaje**: Java 17
-- **Build Tool**: Maven
-- **ORM**: JPA / Hibernate
-- **Seguridad**: Spring Security + JWT
-- **Validación**: Jakarta Validation
-- **Documentación**: Springdoc OpenAPI 3
-
-### Base de Datos
-- **Motor**: MySQL 8.0
-- **Driver**: MySQL Connector/J
-- **Pool**: HikariCP
-
-### DevOps
-- **Contenedores**: Docker
-- **Orquestación**: Docker Compose
-- **CI/CD**: GitHub Actions
-
-## Requisitos Previos
-
-- Java 17 o superior
-- Maven 3.6+
+- Spring Boot 3.5.14, Java 17
+- MySQL 8.0
 - Docker y Docker Compose
-- Git
+- JWT para autenticación
 
 ## Instalación
 
-### 1. Clonar el repositorio
+### Requisitos
+- Java 17+
+- Docker y Docker Compose
+- Git
 
+### Pasos
+
+1. Clonar repositorio
 ```bash
-git clone <repository-url>
+git clone https://github.com/Rodrigo-d1993/cbo-classroom-system.git
 cd cbo-classroom-system
 ```
 
-### 2. Configurar variables de entorno
-
-Copiar el archivo de ejemplo y configurar:
-
+2. Configurar variables de entorno
 ```bash
 cp .env.example .env
+# Editar .env con tus configuraciones
 ```
 
-Editar `.env` con tus configuraciones. Los valores críticos son:
-- `JWT_SECRET`: Secret para firma de tokens (mínimo 256 bits)
-- Credenciales de bases de datos para cada microservicio
-
-### 3. Levantar servicios con Docker
-
+3. Iniciar servicios
 ```bash
-# Construir y levantar todos los servicios
 docker-compose up -d
-
-# Ver logs
-docker-compose logs -f
-
-# Verificar estado
-docker-compose ps
 ```
 
-### 4. Verificar instalación
-
-Cada microservicio expone un health check:
-
+4. Verificar
 ```bash
-curl http://localhost:8081/actuator/health  # ms-auth
-curl http://localhost:8082/actuator/health  # ms-students
-curl http://localhost:8083/actuator/health  # ms-grades
-curl http://localhost:8084/actuator/health  # ms-attendance
+curl http://localhost:8081/actuator/health
 ```
 
-## Uso Básico
+## Uso
 
-### 1. Registro de Usuario
-
-```bash
-curl -X POST http://localhost:8081/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan.perez@example.com",
-    "password": "Password123!",
-    "roleName": "DOCENTE"
-  }'
-```
-
-### 2. Login
-
+### Login
 ```bash
 curl -X POST http://localhost:8081/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{
-    "email": "juan.perez@example.com",
-    "password": "Password123!"
-  }'
+  -d '{"email":"admin@cbo.cl","password":"Admin123!"}'
 ```
 
-Guardar el token JWT recibido para usarlo en requests subsecuentes.
-
-### 3. Acceder a otros servicios
-
-```bash
-# Ejemplo: Listar estudiantes
-curl -X GET http://localhost:8082/api/students \
-  -H "Authorization: Bearer {tu-token-jwt}"
-```
-
-## Documentación API
-
-Cada microservicio expone documentación Swagger UI:
-
-- ms-auth: http://localhost:8081/swagger-ui.html
-- ms-students: http://localhost:8082/swagger-ui.html
-- ms-grades: http://localhost:8083/swagger-ui.html
-- ms-attendance: http://localhost:8084/swagger-ui.html
+### Documentación API
+Cada microservicio expone Swagger UI en `/swagger-ui.html`
 
 ## Roles y Permisos
 
@@ -164,157 +88,50 @@ El sistema implementa los siguientes roles:
 - **APODERADO**: Consulta información de sus pupilos
 - **ESTUDIANTE**: Consulta su propia información
 
-## Estructura del Proyecto
+## Estructura
 
 ```
 cbo-classroom-system/
-├── ms-auth/              # Microservicio de autenticación
-├── ms-students/          # Microservicio de estudiantes
-├── ms-grades/            # Microservicio de calificaciones
-├── ms-attendance/        # Microservicio de asistencia
-├── ms-annotations/       # Microservicio de anotaciones
-├── docker-compose.yml    # Orquestación de servicios
-├── .env                  # Variables de entorno (no commitear)
-├── .env.example          # Plantilla de variables
-└── README.md             # Este archivo
+├── ms-auth/          
+├── ms-students/      
+├── ms-grades/        
+├── ms-attendance/    
+├── ms-annotations/   
+├── docker-compose.yml
+└── .env.example
 ```
 
-Cada microservicio contiene:
-```
-ms-{nombre}/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/bookclass/ms_{nombre}/
-│   │   │       ├── config/      # Configuraciones
-│   │   │       ├── controller/  # Controladores REST
-│   │   │       ├── dto/         # Data Transfer Objects
-│   │   │       ├── exception/   # Manejo de excepciones
-│   │   │       ├── model/       # Entidades JPA
-│   │   │       ├── repository/  # Repositorios
-│   │   │       ├── security/    # Seguridad JWT
-│   │   │       └── service/     # Lógica de negocio
-│   │   └── resources/
-│   │       ├── application.properties
-│   │       ├── application-dev.properties
-│   │       └── application-prod.properties
-│   └── test/            # Tests unitarios e integración
-├── Dockerfile           # Imagen Docker
-├── pom.xml             # Dependencias Maven
-├── init.sql            # Script de inicialización BD
-└── README.md           # Documentación del servicio
-```
-
-## Desarrollo Local
-
-Para desarrollar un microservicio sin Docker:
+## Desarrollo
 
 ```bash
 cd ms-{nombre}
-./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-Para compilar:
-
-```bash
+./mvnw spring-boot:run
 ./mvnw clean package
-```
-
-Para ejecutar tests:
-
-```bash
 ./mvnw test
 ```
 
-## Comandos Útiles
-
-### Docker
+## Comandos Docker
 
 ```bash
-# Reconstruir un servicio específico
-docker-compose up -d --build ms-auth
-
-# Ver logs de un servicio
-docker-compose logs -f ms-auth
-
-# Reiniciar un servicio
-docker-compose restart ms-auth
-
-# Detener todo
-docker-compose down
-
-# Limpiar volúmenes (CUIDADO: borra datos)
-docker-compose down -v
+docker-compose up -d              # Iniciar
+docker-compose logs -f ms-auth    # Ver logs
+docker-compose restart ms-auth    # Reiniciar
+docker-compose down               # Detener
 ```
-
-### Base de Datos
-
-```bash
-# Conectar a base de datos de un servicio
-docker exec -it db-auth mysql -u auth_user -p
-
-# Backup de base de datos
-docker exec db-auth mysqldump -u root -p db_auth > backup.sql
-```
-
-## Testing
-
-### Tests Unitarios
-
-Cada microservicio incluye tests unitarios:
-
-```bash
-cd ms-auth
-./mvnw test
-```
-
-### Tests de Integración
-
-Ver archivo `TESTING_RESULTS.md` para procedimientos de testing manual.
-
-## Troubleshooting
-
-### Servicios no inician
-- Verificar que los puertos no estén en uso
-- Revisar logs: `docker-compose logs <servicio>`
-- Verificar configuración .env
-
-### Error de conexión a base de datos
-- Esperar ~30 segundos para que MySQL inicie
-- Verificar health checks
-- Revisar credenciales en .env
-
-### Error de autenticación JWT
-- Verificar que JWT_SECRET sea el mismo en todos los servicios
-- Verificar que el secret tenga al menos 32 bytes
-- Verificar expiración del token
-
-## Documentación Adicional
-
-- [ARQUITECTURA_Y_PATRONES.md](./ARQUITECTURA_Y_PATRONES.md): Detalles de arquitectura y patrones de diseño
-- [PROXIMOS_PASOS.md](./PROXIMOS_PASOS.md): Guía de desarrollo y próximas funcionalidades
-- [GUIA_PARA_COLABORADORES.md](./GUIA_PARA_COLABORADORES.md): Guía para contribuidores
 
 ## Seguridad
 
-- No commitear el archivo `.env` al repositorio
-- Cambiar JWT_SECRET en producción
+- No commitear `.env`
+- JWT_SECRET mínimo 256 bits  
 - Usar HTTPS en producción
-- Implementar rate limiting en producción
-- Revisar periódicamente dependencias para vulnerabilidades
-
-## Licencia
-
-Este proyecto es un trabajo académico desarrollado para fines educativos.
 
 ## Autores
 
-Proyecto desarrollado como parte del curso de Ingeniería de Software.
+**Desarrollado por**: Rodrigo Delgadillo y Carolina Celis  
+**Asignatura**: Desarrollo Fullstack 3  
+**Año**: 2026
 
-## Fecha de Desarrollo
+## Repositorio
 
-2024 - Sistema CBO Classroom
+https://github.com/Rodrigo-d1993/cbo-classroom-system
 
-## Contacto
-
-Para consultas sobre el proyecto, contactar al equipo de desarrollo.
