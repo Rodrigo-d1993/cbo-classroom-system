@@ -89,7 +89,7 @@ Content-Type: application/json
   "tipo": "POSITIVA",
   "categoria": "PARTICIPACION",
   "descripcion": "Excelente participación en clase",
-  "fecha": "2024-03-15"
+  "fecha": "2026-03-15"
 }
 ```
 
@@ -105,7 +105,7 @@ Content-Type: application/json
   "tipo": "NEGATIVA",
   "categoria": "CONDUCTA",
   "descripcion": "Falta de respeto hacia compañero",
-  "fecha": "2024-03-15",
+  "fecha": "2026-03-15",
   "gravedad": "GRAVE"
 }
 ```
@@ -143,7 +143,7 @@ Response:
 
 ### Obtener anotaciones por rango de fechas
 ```http
-GET /api/annotations/student/{studentId}/range?startDate=2024-03-01&endDate=2024-03-31
+GET /api/annotations/student/{studentId}/range?startDate=2026-03-01&endDate=2026-03-31
 Authorization: Bearer {token}
 ```
 
@@ -159,7 +159,7 @@ Authorization: Bearer {token}
 ```env
 ANNOTATIONS_DB_NAME=db_annotations
 ANNOTATIONS_DB_USER=annotations_user
-ANNOTATIONS_DB_PASS=AnnotationsS3cur3P@ss!2024
+ANNOTATIONS_DB_PASS=AnnotationsS3cur3P@ss!2026
 ANNOTATIONS_PORT=8085
 JWT_SECRET=qUdDXDq5nH7co/iln7WibkzzVN/Dx85pX591ZUJZtVY=
 SPRING_PROFILE=dev
@@ -255,7 +255,7 @@ http://localhost:8085/swagger-ui.html
 5. Descripción máximo 1000 caracteres
 6. Categoría máximo 100 caracteres
 
-## Mejoras Futuras (Opcionales)
+## Mejoras Futuras
 
 1. Notificaciones automáticas a apoderados por anotaciones graves
 2. Reportes periódicos de comportamiento
@@ -280,5 +280,10 @@ http://localhost:8085/swagger-ui.html
 - Solo se pueden registrar anotaciones de fechas pasadas o presentes
 - Verificar formato de fecha (YYYY-MM-DD)
 
-## Versión
-v0.0.1-SNAPSHOT
+---
+
+**Desarrollado por**: Rodrigo Delgadillo y Carolina Celis  
+**Asignatura**: Desarrollo Fullstack 3  
+**Puerto**: 8085  
+**Swagger**: http://localhost:8085/swagger-ui.html  
+**Health Check**: http://localhost:8085/actuator/health
