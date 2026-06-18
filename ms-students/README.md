@@ -1,23 +1,23 @@
-# 📚 ms-students - Student Management Microservice
+# ms-students - Microservicio de Gestión de Estudiantes
 
 Microservicio de gestión de estudiantes y apoderados para el Sistema de Libro de Clases CBO.
 
-## 🎯 Funcionalidades
+## Funcionalidades
 
 ### Estudiantes
-- ✅ Crear estudiante (ADMIN, DIRECTOR)
-- ✅ Listar todos los estudiantes (ADMIN, DIRECTOR, DOCENTE, INSPECTOR)
-- ✅ Ver estudiante por ID (Todos los roles autenticados)
-- ✅ Buscar por RUT (ADMIN, DIRECTOR, DOCENTE, INSPECTOR)
-- ✅ Filtrar por curso (ADMIN, DIRECTOR, DOCENTE, INSPECTOR)
-- ✅ Actualizar estudiante (ADMIN, DIRECTOR)
-- ✅ Desactivar estudiante (ADMIN, DIRECTOR)
+- Crear estudiante (ADMIN, DIRECTOR)
+- Listar todos los estudiantes (ADMIN, DIRECTOR, DOCENTE, INSPECTOR)
+- Ver estudiante por ID (Todos los roles autenticados)
+- Buscar por RUT (ADMIN, DIRECTOR, DOCENTE, INSPECTOR)
+- Filtrar por curso (ADMIN, DIRECTOR, DOCENTE, INSPECTOR)
+- Actualizar estudiante (ADMIN, DIRECTOR)
+- Desactivar estudiante (ADMIN, DIRECTOR)
 
 ### Apoderados
-- ✅ Gestión de apoderados asociados a estudiantes
-- ✅ Relación many-to-many (1 estudiante puede tener N apoderados)
+- Gestión de apoderados asociados a estudiantes
+- Relación many-to-many (1 estudiante puede tener N apoderados)
 
-## 📊 Modelo de Datos
+## Modelo de Datos
 
 ### Student
 ```java
@@ -46,7 +46,7 @@ Microservicio de gestión de estudiantes y apoderados para el Sistema de Libro d
 - createdAt: LocalDateTime
 ```
 
-## 🔌 Endpoints API
+## Endpoints API
 
 ### Students
 
@@ -61,7 +61,7 @@ Microservicio de gestión de estudiantes y apoderados para el Sistema de Libro d
 | DELETE | /students/{id} | Desactivar | ADMIN, DIRECTOR |
 | POST | /students/{studentId}/guardians/{guardianId} | Asignar apoderado | ADMIN, DIRECTOR |
 
-## 🚀 Uso Rápido
+## Uso Rápido
 
 ### 1. Crear un estudiante
 
@@ -101,7 +101,7 @@ GET http://localhost:8082/students/curso/3° Medio A
 Authorization: Bearer <token>
 ```
 
-## 🔐 Autenticación
+## Autenticación
 
 Este microservicio valida JWT tokens generados por `ms-auth`. 
 
@@ -110,14 +110,14 @@ Este microservicio valida JWT tokens generados por `ms-auth`.
 Authorization: Bearer <jwt-token>
 ```
 
-## 📝 Swagger UI
+## Swagger UI
 
 Documentación interactiva disponible en:
 ```
 http://localhost:8082/swagger-ui.html
 ```
 
-## 🐳 Docker
+## Docker
 
 ### Build
 ```bash
@@ -129,7 +129,7 @@ docker build -t ms-students .
 docker-compose up ms-students
 ```
 
-## 🗄️ Base de Datos
+## Base de Datos
 
 - **Motor:** MySQL 8.0
 - **Base de datos:** db_students
@@ -143,7 +143,7 @@ docker-compose up ms-students
 
 El script `init.sql` incluye 3 estudiantes y 2 apoderados de ejemplo para testing.
 
-## ⚙️ Configuración
+## Configuración
 
 ### Variables de Entorno
 
@@ -161,19 +161,19 @@ SPRING_PROFILE=dev
 - **dev:** DDL auto-update, SQL logging habilitado
 - **prod:** DDL validate, logging mínimo, errores ocultos
 
-## 🧪 Testing
+## Testing
 
 ```bash
 ./mvnw test
 ```
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 - **Layered Architecture:** Controller → Service → Repository → Database
 - **Pattern:** Repository Pattern, DTO Pattern
 - **Security:** JWT validation, Role-Based Access Control (RBAC)
 
-## 📦 Dependencias Principales
+## Dependencias Principales
 
 - Spring Boot 3.5.14
 - Spring Data JPA
@@ -183,20 +183,20 @@ SPRING_PROFILE=dev
 - SpringDoc OpenAPI
 - Lombok
 
-## 🔗 Integración con otros servicios
+## Integración con otros servicios
 
 - **ms-auth:** Valida tokens JWT
 - **ms-grades:** (Futuro) Obtiene estudiantes para registrar notas
 - **ms-attendance:** (Futuro) Obtiene estudiantes para asistencia
 
-## 📌 Notas
+## Notas
 
 - RUT debe tener formato chileno: `12345678-9`
 - Estudiantes solo se desactivan, no se borran físicamente
 - La relación estudiante-apoderado es many-to-many
 - Campo `curso` es texto libre (ej: "3° Medio A", "2° Básico B")
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Error: JWT Invalid
 - Verificar que JWT_SECRET es el mismo que en ms-auth
@@ -212,6 +212,8 @@ SPRING_PROFILE=dev
 
 ---
 
-**Puerto:** 8082  
-**Swagger:** http://localhost:8082/swagger-ui.html  
-**Health Check:** http://localhost:8082/actuator/health
+**Desarrollado por**: Rodrigo Delgadillo y Carolina Celis  
+**Asignatura**: Desarrollo Fullstack 3  
+**Puerto**: 8082  
+**Swagger**: http://localhost:8082/swagger-ui.html  
+**Health Check**: http://localhost:8082/actuator/health
