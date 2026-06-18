@@ -137,7 +137,7 @@ Content-Type: application/json
   "subjectId": 1,
   "nota": 6.5,
   "tipo": "PRUEBA",
-  "fecha": "2024-03-15",
+  "fecha": "2026-03-15",
   "observacion": "Prueba de funciones",
   "teacherId": 5
 }
@@ -179,7 +179,7 @@ Content-Type: application/json
 {
   "nota": 6.8,
   "tipo": "PRUEBA",
-  "fecha": "2024-03-15",
+  "fecha": "2026-03-15",
   "observacion": "Nota corregida"
 }
 ```
@@ -196,7 +196,7 @@ Authorization: Bearer {token}
 ```env
 GRADES_DB_NAME=db_grades
 GRADES_DB_USER=grades_user
-GRADES_DB_PASS=GradesS3cur3P@ss!2024
+GRADES_DB_PASS=GradesS3cur3P@ss!2026
 GRADES_PORT=8083
 JWT_SECRET=qUdDXDq5nH7co/iln7WibkzzVN/Dx85pX591ZUJZtVY=
 SPRING_PROFILE=dev
@@ -284,5 +284,10 @@ http://localhost:8083/swagger-ui.html
 - Las notas deben estar entre 1.0 y 7.0
 - Usar formato decimal con un dígito (ej: 6.5)
 
-## Versión
-v0.0.1-SNAPSHOT
+---
+
+**Desarrollado por**: Rodrigo Delgadillo y Carolina Celis  
+**Asignatura**: Desarrollo Fullstack 3  
+**Puerto**: 8083  
+**Swagger**: http://localhost:8083/swagger-ui.html  
+**Health Check**: http://localhost:8083/actuator/health
