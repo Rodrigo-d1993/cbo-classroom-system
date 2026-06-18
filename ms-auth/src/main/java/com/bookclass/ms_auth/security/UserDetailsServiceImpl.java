@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         user.isActive(),
                         true, true, true,
                         user.getRoles().stream()
-                                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
+                                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                                 .collect(Collectors.toList())
                 ))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
