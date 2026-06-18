@@ -2,6 +2,7 @@ services:
 
   db-auth:
     image: mysql:8.0
+    container_name: db-auth
     environment:
       MYSQL_DATABASE: ${AUTH_DB_NAME}
       MYSQL_USER: ${AUTH_DB_USER}
@@ -11,27 +12,269 @@ services:
       - db_auth_data:/var/lib/mysql
       - ./ms-auth/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${AUTH_DB_USER}", "-p${AUTH_DB_PASS}"]
       interval: 10s
+      timeout: 5s
       retries: 5
+      start_period: 30s
+    restart: unless-stopped
     networks:
       - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
 
   ms-auth:
     build: ./ms-auth
+    container_name: ms-auth
     ports:
       - "${AUTH_PORT}:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db-auth:3306/${AUTH_DB_NAME}
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-auth:3306/${AUTH_DB_NAME}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${AUTH_DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${AUTH_DB_PASS}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-prod}
     depends_on:
       db-auth:
         condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  db-students:
+    image: mysql:8.0
+    container_name: db-students
+    environment:
+      MYSQL_DATABASE: ${STUDENTS_DB_NAME}
+      MYSQL_USER: ${STUDENTS_DB_USER}
+      MYSQL_PASSWORD: ${STUDENTS_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_students_data:/var/lib/mysql
+      - ./ms-students/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${STUDENTS_DB_USER}", "-p${STUDENTS_DB_PASS}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  ms-students:
+    build: ./ms-students
+    container_name: ms-students
+    ports:
+      - "${STUDENTS_PORT}:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-students:3306/${STUDENTS_DB_NAME}?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${STUDENTS_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${STUDENTS_DB_PASS}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-prod}
+    depends_on:
+      db-students:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  db-grades:
+    image: mysql:8.0
+    container_name: db-grades
+    environment:
+      MYSQL_DATABASE: ${GRADES_DB_NAME}
+      MYSQL_USER: ${GRADES_DB_USER}
+      MYSQL_PASSWORD: ${GRADES_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_grades_data:/var/lib/mysql
+      - ./ms-grades/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${GRADES_DB_USER}", "-p${GRADES_DB_PASS}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  ms-grades:
+    build: ./ms-grades
+    container_name: ms-grades
+    ports:
+      - "${GRADES_PORT}:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-grades:3306/${GRADES_DB_NAME}?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${GRADES_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${GRADES_DB_PASS}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-prod}
+    depends_on:
+      db-grades:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  db-attendance:
+    image: mysql:8.0
+    container_name: db-attendance
+    environment:
+      MYSQL_DATABASE: ${ATTENDANCE_DB_NAME}
+      MYSQL_USER: ${ATTENDANCE_DB_USER}
+      MYSQL_PASSWORD: ${ATTENDANCE_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_attendance_data:/var/lib/mysql
+      - ./ms-attendance/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${ATTENDANCE_DB_USER}", "-p${ATTENDANCE_DB_PASS}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  ms-attendance:
+    build: ./ms-attendance
+    container_name: ms-attendance
+    ports:
+      - "${ATTENDANCE_PORT}:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-attendance:3306/${ATTENDANCE_DB_NAME}?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${ATTENDANCE_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${ATTENDANCE_DB_PASS}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-prod}
+    depends_on:
+      db-attendance:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8084/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  db-annotations:
+    image: mysql:8.0
+    container_name: db-annotations
+    environment:
+      MYSQL_DATABASE: ${ANNOTATIONS_DB_NAME}
+      MYSQL_USER: ${ANNOTATIONS_DB_USER}
+      MYSQL_PASSWORD: ${ANNOTATIONS_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_annotations_data:/var/lib/mysql
+      - ./ms-annotations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${ANNOTATIONS_DB_USER}", "-p${ANNOTATIONS_DB_PASS}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  ms-annotations:
+    build: ./ms-annotations
+    container_name: ms-annotations
+    ports:
+      - "${ANNOTATIONS_PORT}:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-annotations:3306/${ANNOTATIONS_DB_NAME}?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${ANNOTATIONS_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${ANNOTATIONS_DB_PASS}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-prod}
+    depends_on:
+      db-annotations:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8085/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
 
 networks:
   backend:
@@ -39,3 +282,12 @@ networks:
 
 volumes:
   db_auth_data:
+    driver: local
+  db_students_data:
+    driver: local
+  db_grades_data:
+    driver: local
+  db_attendance_data:
+    driver: local
+  db_annotations_data:
+    driver: local

@@ -64,7 +64,7 @@ class UserDetailsServiceImplTest {
         UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
 
         assertTrue(userDetails.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_DOCENTE")));
+                .anyMatch(a -> a.getAuthority().equals("DOCENTE")));
     }
 
     @Test
