@@ -2,7 +2,7 @@
 
 Microservicio para la gestión de asistencia escolar en el sistema CBO Classroom. Implementa el control diario de asistencia de estudiantes con cálculo automático de porcentajes y sistema de justificaciones.
 
-## 🎯 Características Principales
+## Características Principales
 
 ### Sistema de Asistencia Chileno
 - **Mínimo requerido**: 85% de asistencia para aprobar el año escolar
@@ -11,15 +11,15 @@ Microservicio para la gestión de asistencia escolar en el sistema CBO Classroom
 - **Sistema de justificaciones**: Con aprobación por INSPECTOR/DIRECTOR
 
 ### Funcionalidades
-- ✅ Registro diario de asistencia por estudiante
-- ✅ Cálculo automático de porcentajes de asistencia
-- ✅ Sistema de justificaciones con documentos adjuntos
-- ✅ Aprobación/rechazo de justificaciones
-- ✅ Consultas por estudiante, fecha, rango de fechas
-- ✅ Resúmenes de asistencia con alertas
-- ✅ Control de duplicados (un registro por día por estudiante)
+- Registro diario de asistencia por estudiante
+- Cálculo automático de porcentajes de asistencia
+- Sistema de justificaciones con documentos adjuntos
+- Aprobación/rechazo de justificaciones
+- Consultas por estudiante, fecha, rango de fechas
+- Resúmenes de asistencia con alertas
+- Control de duplicados (un registro por día por estudiante)
 
-## 📊 Modelo de Datos
+## Modelo de Datos
 
 ### AttendanceRecord (Registro de Asistencia)
 ```
@@ -52,7 +52,7 @@ Microservicio para la gestión de asistencia escolar en el sistema CBO Classroom
 - **ATRASADO**: Llegó tarde (cuenta como presente en el porcentaje)
 - **JUSTIFICADO**: Inasistencia justificada y aprobada (cuenta como presente)
 
-## 🧮 Cálculo de Porcentaje de Asistencia
+## Cálculo de Porcentaje de Asistencia
 
 ```
 Porcentaje = (PRESENTE + ATRASADO + JUSTIFICADO) / TOTAL × 100
@@ -61,11 +61,11 @@ Porcentaje = (PRESENTE + ATRASADO + JUSTIFICADO) / TOTAL × 100
 En Chile, los atrasos y ausencias justificadas **cuentan como asistencia** para el porcentaje mínimo.
 
 ### Estados del Resumen
-- **OK**: ≥ 85% de asistencia ✅
-- **AT_RISK**: 70-84% de asistencia ⚠️
-- **CRITICAL**: < 70% de asistencia ❌
+- **OK**: >= 85% de asistencia
+- **AT_RISK**: 70-84% de asistencia  
+- **CRITICAL**: < 70% de asistencia
 
-## 🔐 Seguridad y Roles
+## Seguridad y Roles
 
 ### Control de Acceso por Endpoint
 
@@ -85,7 +85,7 @@ En Chile, los atrasos y ausencias justificadas **cuentan como asistencia** para 
 - JWT compartido con ms-auth
 - Token Bearer en header `Authorization`
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Attendance Records
 
@@ -97,7 +97,7 @@ Content-Type: application/json
 
 {
   "studentId": 1,
-  "fecha": "2024-03-15",
+  "fecha": "2026-03-15",
   "status": "PRESENTE",
   "observacion": null,
   "registeredBy": 5
@@ -112,7 +112,7 @@ Content-Type: application/json
 
 {
   "studentId": 1,
-  "fecha": "2024-03-15",
+  "fecha": "2026-03-15",
   "status": "ATRASADO",
   "observacion": "Llegó 10 minutos tarde"
 }
@@ -132,7 +132,7 @@ Authorization: Bearer {token}
 
 **Obtener asistencia de una fecha específica (todo el curso)**
 ```http
-GET /api/attendance/date/2024-03-15
+GET /api/attendance/date/2026-03-15
 Authorization: Bearer {token}
 ```
 
@@ -156,7 +156,7 @@ Response:
 
 **Obtener resumen en rango de fechas**
 ```http
-GET /api/attendance/student/{studentId}/summary/range?startDate=2024-03-01&endDate=2024-03-31
+GET /api/attendance/student/{studentId}/summary/range?startDate=2026-03-01&endDate=2026-03-31
 Authorization: Bearer {token}
 ```
 
@@ -193,13 +193,13 @@ GET /api/justifications/pending
 Authorization: Bearer {token}
 ```
 
-## 🚀 Ejecución
+## Ejecución
 
 ### Variables de Entorno Requeridas
 ```env
 ATTENDANCE_DB_NAME=db_attendance
 ATTENDANCE_DB_USER=attendance_user
-ATTENDANCE_DB_PASS=AttendanceS3cur3P@ss!2024
+ATTENDANCE_DB_PASS=AttendanceS3cur3P@ss!2026
 ATTENDANCE_PORT=8084
 JWT_SECRET=qUdDXDq5nH7co/iln7WibkzzVN/Dx85pX591ZUJZtVY=
 SPRING_PROFILE=dev
@@ -221,9 +221,9 @@ cd ms-attendance
 ./mvnw clean package
 ```
 
-## 📊 Datos de Ejemplo
+## Datos de Ejemplo
 
-El microservicio incluye 10 registros de asistencia para el estudiante id=1 en marzo 2024:
+El microservicio incluye 10 registros de asistencia para el estudiante id=1 en marzo 2026:
 - 7 días PRESENTE
 - 1 día ATRASADO
 - 2 días AUSENTE (uno con justificación pendiente)
@@ -231,20 +231,20 @@ El microservicio incluye 10 registros de asistencia para el estudiante id=1 en m
 **Porcentaje actual**: 80% (8/10)  
 **Estado**: AT_RISK (necesita 85% mínimo)
 
-## 🔍 Health Check
+## Health Check
 
 ```http
 GET http://localhost:8084/actuator/health
 ```
 
-## 📚 Documentación API (Swagger)
+## Documentación API (Swagger)
 
 Una vez iniciado el servicio:
 ```
 http://localhost:8084/swagger-ui.html
 ```
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 - **Framework**: Spring Boot 3.5.14
 - **Java**: 17
@@ -253,13 +253,13 @@ http://localhost:8084/swagger-ui.html
 - **Seguridad**: Spring Security + JWT
 - **Documentación**: OpenAPI 3 (Springdoc)
 
-## 🔄 Integración con otros Microservicios
+## Integración con otros Microservicios
 
 - **ms-auth**: Autenticación y autorización JWT
 - **ms-students**: Referencia a estudiantes mediante studentId
 - **Future**: ms-grades (cruzar asistencia con rendimiento académico)
 
-## 💡 Flujo de Trabajo Típico
+## Flujo de Trabajo Típico
 
 1. **Profesor toma asistencia diaria**
    - Registra PRESENTE/AUSENTE/ATRASADO para cada estudiante
@@ -276,7 +276,7 @@ http://localhost:8084/swagger-ui.html
    - Genera alertas si cae bajo 85%
    - CRITICAL si cae bajo 70%
 
-## 🎯 Reglas de Negocio
+## Reglas de Negocio
 
 1. **Un registro por día**: No se puede duplicar asistencia para el mismo estudiante en la misma fecha
 2. **Solo ausencias se justifican**: No tiene sentido justificar un día presente
@@ -285,7 +285,7 @@ http://localhost:8084/swagger-ui.html
 5. **Justificados cuentan como presentes**: Una vez aprobados
 6. **Fechas pasadas o presentes**: No se puede registrar asistencia futura
 
-## 📝 Mejoras Futuras (Opcionales)
+## Mejoras Futuras
 
 1. **Notificaciones automáticas**: Alertar a apoderados cuando la asistencia baja del 85%
 2. **Reportes mensuales**: PDF con resumen de asistencia
@@ -296,7 +296,7 @@ http://localhost:8084/swagger-ui.html
 7. **Reconocimiento facial**: Para agilizar la toma de asistencia
 8. **Dashboard**: Visualización de tendencias de asistencia
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 **Error: Attendance already recorded**
 - Solo se permite un registro por estudiante por día
@@ -310,5 +310,10 @@ http://localhost:8084/swagger-ui.html
 - Un registro de asistencia solo puede tener una justificación
 - Verificar si ya existe antes de crear nueva
 
-## 📦 Versión
-v0.0.1-SNAPSHOT
+---
+
+**Desarrollado por**: Rodrigo Delgadillo y Carolina Celis  
+**Asignatura**: Desarrollo Fullstack 3  
+**Puerto**: 8084  
+**Swagger**: http://localhost:8084/swagger-ui.html  
+**Health Check**: http://localhost:8084/actuator/health
