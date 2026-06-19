@@ -24,3 +24,6 @@ node_modules/
 
 # VSCode
 .vscode/
+
+# Testing documentation
+TESTING.md

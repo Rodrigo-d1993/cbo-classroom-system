@@ -29,3 +29,10 @@ INSERT IGNORE INTO roles (name) VALUES
     ('DOCENTE'),
     ('INSPECTOR'),
     ('APODERADO');
+
+INSERT IGNORE INTO users (username, password, email, active, created_at)
+VALUES ('admin', '$2b$12$F4r6WgNNlmgGoGFNzO338.a0bZSUBLzCbzuVFN/7n/hasly0MCvy6', 'admin@cbo.cl', 1, NOW());
+
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r
+WHERE u.username = 'admin' AND r.name = 'ADMIN_SISTEMA';
